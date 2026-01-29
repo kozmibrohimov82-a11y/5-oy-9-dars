@@ -43,12 +43,12 @@ async def delete_doctor(doctor_id:int,db:AsyncSession):
 
 
 ########################################################################
-async def create_patient(doctor:PatientCreate,db:AsyncSession) -> PatientResponse:
+async def create_patient(patient:PatientCreate,db:AsyncSession) -> PatientResponse:
     db_patient=Patient(**patient.model_dump())
     db.add(db_patient)
     await db.commit()
     await db.refresh(db_patient)
-    return DoctorResponse.model_validate(db_patient)
+    return PatientResponse.model_validate(db_patient)
 
 async def read_patients(db:AsyncSession) -> list[PatientResponse]:
     data = await db.execute(select(Patient))

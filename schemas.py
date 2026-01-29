@@ -15,7 +15,7 @@ class DoctorResponse(DoctorCreate):
 class PatientCreate(BaseModel):
     full_name: str
     sick_kind: str
-
+    doctor_id:int
 
 class PatientResponse(PatientCreate):
     id: int
