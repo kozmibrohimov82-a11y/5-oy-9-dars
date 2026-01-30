@@ -1,14 +1,14 @@
-from fastapi.params import Depends
-from fastapi import FastAPI
+from fastapi.params import Depends,Form
+from fastapi import FastAPI, UploadFile
 import uvicorn
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from fastapi.staticfiles import StaticFiles
 from database import *
 from schemas import *
 import crud
 
 app=FastAPI()
-
+app.mount(f"/{MEDIA_DIR}",StaticFiles(directory="media"),name="media")
 async def init_db():
     async with engine.begin() as connection:
         await connection.run_sync(Base.metadata.create_all)
@@ -39,8 +39,16 @@ async def delete(doctor_id:int,db:AsyncSession=Depends(get_db)):
 ##################################################################################
 
 @app.post("/patients/",response_model=PatientResponse,tags=["Patient"])
-async def create_patient_endpoint(patient:PatientCreate,db:AsyncSession=Depends(get_db)):
-    return await crud.create_patient(patient,db)
+async def create_patient_endpoint(
+        full_name: str=Form(...),
+        sick_kind: str=Form(...),
+        doctor_id:int=Form(...),
+        image:UploadFile=None,
+        video:UploadFile=None,
+        db:AsyncSession=Depends(get_db)
+       ):
+    patient=PatientCreate(full_name=full_name,sick_kind=sick_kind,doctor_id=doctor_id)
+    return await crud.create_patient(patient,db,image,video)
 
 @app.get("/patients/",response_model=list[PatientResponse],tags=["Patient"])
 async def get_all(db:AsyncSession=Depends(get_db)):

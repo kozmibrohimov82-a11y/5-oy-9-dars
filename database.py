@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker,create_async_engine
 from sqlalchemy.orm import DeclarativeBase
-
+import os
 DB_URL="sqlite+aiosqlite:///./main.db"
 engine=create_async_engine(DB_URL,echo=True)
 LocalSession=async_sessionmaker(engine,expire_on_commit=False)
@@ -12,3 +12,5 @@ async def get_db():
         yield session
 
 
+MEDIA_DIR="media"
+os.makedirs(MEDIA_DIR,exist_ok=True)

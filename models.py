@@ -20,5 +20,7 @@ class Patient(Base):
     full_name: Mapped[str] = mapped_column(String(150))
     sick_kind:Mapped[str]=mapped_column(String(150))
     doctor_id:Mapped[int]=mapped_column(ForeignKey("doctor.id"))
+    image:Mapped[Optional[str]]=mapped_column(nullable=True)
+    video:Mapped[Optional[str]]=mapped_column(nullable=True)
 
     doctor:Mapped["Doctor"]=relationship(back_populates="patient")
